@@ -18,9 +18,9 @@ app.use(routes)
 
 
 io.on("connection", (socket) => {
-	console.log(`Nova conexão: ${socket.id}`)
+  console.log(`Nova conexão: ${socket.id}`)
 
-	socket.on("join_room", async ({ name, topicId }) => {
+  socket.on("join_room", async ({ name, topicId }) => {
     socket.join(topicId)
 
     const systemMessage = {
@@ -30,9 +30,9 @@ io.on("connection", (socket) => {
     }
 
     io.to(topicId).emit("new_message", systemMessage)
-  })
+  });
 
-socket.on("send_message", async ({ content, author, topicId }) => {
+  socket.on("send_message", async ({ content, author, topicId }) => {
     const topic = await Topic.findById(topicId)
 
     const message = {
@@ -45,7 +45,7 @@ socket.on("send_message", async ({ content, author, topicId }) => {
     await topic?.save()
 
     io.to(topicId).emit("new_message", message)
-  })
+  });
 
   socket.on("leave_room", async ({ name, topicId }) => {
     socket.leave(topicId)
@@ -57,17 +57,14 @@ socket.on("send_message", async ({ content, author, topicId }) => {
     }
 
     io.to(topicId).emit("new_message", systemMessage)
-  })
+  });
 
   socket.on("disconnect", () => {
     console.log(`${socket.id} desconectou-se`)
-  })
-})
-
-
-
+  });
+});
 
 
 connect()
 
-app.listen(3001, ()=> console.log("Aplicação iniciada na porta 3001"))
+server.listen(3001, () => console.log("Aplicação iniciada na porta 3001"))
